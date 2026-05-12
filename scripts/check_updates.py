@@ -56,14 +56,20 @@ def get_latest_cert_folder():
     r.raise_for_status()
     items = r.json()
 
-    folders = [i for i in items if i["type"] == "dir"]
+    # Exclude well-known non-cert directories
+    NON_CERT_DIRS = {"scripts", "src", "build", "dist", "out", ".github", "docs", "test", "tests"}
+    folders = [
+        i for i in items
+        if i["type"] == "dir" and i["name"].lower() not in NON_CERT_DIRS
+    ]
     if not folders:
-        print("[WARN] No folders found in cert repo.")
+        print("[WARN] No cert folders found in cert repo (after filtering non-cert dirs).")
         return None, None
 
     # Sort by name descending (works for date-named or numeric folders)
     folders.sort(key=lambda x: x["name"], reverse=True)
     latest = folders[0]
+    print(f"  Available cert folders: {[f['name'] for f in folders]}")
     return latest["name"], latest["sha"]
 
 # ── Fetch latest IPA release ──────────────────────────────────────────────────
