@@ -62,11 +62,21 @@ def main():
 
     # If no cert folder specified, auto-detect latest
     folder = CERT_FOLDER
+
+    # Guard: reject local-looking paths that leaked in from the workflow env
+    LOCAL_DIRS = {"scripts", "src", "build", ".github", ".state", "dist", "out"}
+    if folder and folder.lower() in LOCAL_DIRS:
+        print(f"[WARN] CERT_FOLDER='{folder}' looks like a local repo directory, not a cert folder — ignoring it and auto-detecting.")
+        folder = ""
+
     if not folder:
         print(f"No CERT_FOLDER specified — auto-detecting from {CERT_REPO}...")
         root = list_folder("")
-        folders = sorted([i for i in root if i["type"] == "dir"],
-                         key=lambda x: x["name"], reverse=True)
+        NON_CERT_DIRS = {"scripts", "src", "build", "dist", "out", ".github", "docs", "test", "tests"}
+        folders = sorted(
+            [i for i in root if i["type"] == "dir" and i["name"].lower() not in NON_CERT_DIRS],
+            key=lambda x: x["name"], reverse=True
+        )
         if not folders:
             sys.exit("[ERROR] No certificate folders found in cert repo.")
         folder = folders[0]["name"]
