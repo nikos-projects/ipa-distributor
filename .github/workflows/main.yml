@@ -83,15 +83,19 @@ jobs:
         run: pip install requests Pillow
 
       # ── 1. Install zsign ─────────────────────────────────────────────────────
-      - name: Setup zsign
+      - name: Install zsign
         run: |
-              git clone https://github.com/zhly0/zsign.git
-              cd zsign
-              mkdir build
-              cd build
-              cmake ..
-              make
-              sudo cp zsign /usr/local/bin/zsign
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            libssl-dev libminizip-dev zlib1g-dev cmake g++ \
+            git openssl unzip curl jq
+
+          git clone --depth 1 https://github.com/zhlynn/zsign.git /tmp/zsign
+          cd /tmp/zsign
+          cmake -B build -DCMAKE_BUILD_TYPE=Release .
+          cmake --build build -j$(nproc)
+          sudo cp build/zsign /usr/local/bin/zsign
+          zsign --version || echo "zsign installed"
 
       # ── 2. Fetch latest cert from NovaCerts repo ─────────────────────────────
       - name: Fetch latest certificate bundle
