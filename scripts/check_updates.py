@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 check_updates.py
-Compares the latest cert folder in NovaCerts and the latest IPA release
+Compares ALL cert folders in NovaCerts and the latest IPA release
 against the last known state. Sets GitHub Actions outputs accordingly.
 """
 
@@ -40,37 +40,27 @@ def read_state(filename):
         return open(path).read().strip()
     return ""
 
-# ── Fetch latest cert folder ──────────────────────────────────────────────────
-def get_latest_cert_folder():
+# ── Fetch ALL cert folders ────────────────────────────────────────────────────
+def get_all_cert_folders():
     """
-    Looks at the root of CERT_REPO for the newest folder (by name or commit date).
-    Folders are expected to be named like dates or incrementing IDs.
+    Returns a list of all folder names at the root of CERT_REPO,
+    sorted descending (newest first).
     """
     url = f"{API}/repos/{CERT_REPO}/contents/"
     r = requests.get(url, headers=gh_headers(CERT_PAT), timeout=30)
 
     if r.status_code == 404:
         print(f"[WARN] Cert repo {CERT_REPO} not found or private — check CERT_REPO_PAT secret.")
-        return None, None
+        return []
 
     r.raise_for_status()
     items = r.json()
 
-    # Exclude well-known non-cert directories
-    NON_CERT_DIRS = {"scripts", "src", "build", "dist", "out", ".github", "docs", "test", "tests"}
-    folders = [
-        i for i in items
-        if i["type"] == "dir" and i["name"].lower() not in NON_CERT_DIRS
-    ]
-    if not folders:
-        print("[WARN] No cert folders found in cert repo (after filtering non-cert dirs).")
-        return None, None
-
-    # Sort by name descending (works for date-named or numeric folders)
-    folders.sort(key=lambda x: x["name"], reverse=True)
-    latest = folders[0]
-    print(f"  Available cert folders: {[f['name'] for f in folders]}")
-    return latest["name"], latest["sha"]
+    folders = sorted(
+        [i["name"] for i in items if i["type"] == "dir"],
+        reverse=True
+    )
+    return folders
 
 # ── Fetch latest IPA release ──────────────────────────────────────────────────
 def get_latest_ipa_release():
@@ -78,7 +68,6 @@ def get_latest_ipa_release():
     r = requests.get(url, headers=gh_headers(GH_TOKEN), timeout=30)
 
     if r.status_code == 404:
-        # Fall back to checking all releases
         url = f"{API}/repos/{IPA_REPO}/releases"
         r = requests.get(url, headers=gh_headers(GH_TOKEN), timeout=30)
         r.raise_for_status()
@@ -96,7 +85,6 @@ def get_latest_ipa_release():
     ipa_asset = next((a for a in assets if a["name"].endswith(".ipa")), None)
 
     if not ipa_asset:
-        # Check body for direct download links
         print(f"[WARN] No .ipa asset in release {version}. Checking release body...")
         body = release.get("body", "")
         import re
@@ -112,10 +100,17 @@ def main():
     print(f"Checking cert repo : {CERT_REPO}")
     print(f"Checking IPA repo  : {IPA_REPO}")
 
-    cert_folder, cert_sha = get_latest_cert_folder()
-    ipa_version, ipa_url  = get_latest_ipa_release()
+    all_folders   = get_all_cert_folders()
+    ipa_version, ipa_url = get_latest_ipa_release()
 
-    print(f"Latest cert folder : {cert_folder} ({cert_sha})")
+    if not all_folders:
+        sys.exit("[ERROR] No certificate folders found in cert repo.")
+
+    latest_folder = all_folders[0]
+    folders_json  = json.dumps(all_folders)
+
+    print(f"All cert folders   : {all_folders}")
+    print(f"Latest cert folder : {latest_folder}")
     print(f"Latest IPA version : {ipa_version}")
     print(f"IPA download URL   : {ipa_url}")
 
@@ -125,22 +120,24 @@ def main():
     print(f"Cached cert folder : {last_cert}")
     print(f"Cached IPA version : {last_version}")
 
-    cert_changed = cert_folder and cert_folder != last_cert
+    cert_changed = latest_folder and latest_folder != last_cert
     ipa_changed  = ipa_version and ipa_version != last_version
     should_build = FORCE or cert_changed or ipa_changed
 
     print(f"\ncert_changed={cert_changed}, ipa_changed={ipa_changed}, force={FORCE}")
     print(f"should_build={should_build}")
 
-    set_output("should_build", str(should_build).lower())
-    set_output("cert_folder",  cert_folder  or "")
-    set_output("ipa_url",      ipa_url      or "")
-    set_output("ipa_version",  ipa_version  or "unknown")
+    # cert_folders_json is passed downstream so fetch_cert.py can pull all of them
+    set_output("should_build",      str(should_build).lower())
+    set_output("cert_folder",       latest_folder)          # kept for cache key / state
+    set_output("cert_folders_json", folders_json)           # NEW: all folders
+    set_output("ipa_url",           ipa_url      or "")
+    set_output("ipa_version",       ipa_version  or "unknown")
 
     if not should_build:
         print("\n✅ Nothing new — skipping build.")
     else:
-        print("\n🔨 Changes detected — triggering build.")
+        print(f"\n🔨 Changes detected — triggering build ({len(all_folders)} cert(s)).")
 
 if __name__ == "__main__":
     main()
