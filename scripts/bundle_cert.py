@@ -2,24 +2,16 @@
 """
 bundle_cert.py
 
-Bundles the signing certificate (.p12 + .mobileprovision + password.txt)
-into the KSign IPA so that when a user opens the IPA with KSign, the
-certificate is automatically pre-imported.
+For EACH certificate bundle in /tmp/build/certs_manifest.json:
+  - Injects the cert into a fresh copy of ksign_original.ipa
+  - Outputs /tmp/build/bundled/<folder_name>/ksign_bundled.ipa
 
-KSign cert injection method:
-  KSign reads imported certificates from a known path inside its container:
+KSign cert injection method (unchanged from single-cert version):
+  KSign reads imported certificates from:
     <AppBundle>/Documents/Certificates/<cert_name>/
-  
-  By injecting these files into the IPA at:
+  Injecting into the IPA at:
     Payload/<AppName>.app/Documents/Certificates/<cert_folder>/
-  
-  KSign will detect and load them on first launch without any user action.
-  This mirrors how KSign exports cert bundles: a folder containing
-  cert.p12, cert.mobileprovision, and password.txt.
-
-  Additionally, we create a KSign-compatible "import bundle":
-    Payload/<AppName>.app/import.ksign  (a JSON manifest pointing to certs)
-  which triggers KSign's deep-link import flow automatically.
+  triggers automatic pre-import on first launch.
 """
 
 import os
@@ -28,13 +20,10 @@ import json
 import shutil
 import zipfile
 import tempfile
-import glob
 
-BUILD_DIR = "/tmp/build"
-CERTS_DIR = os.path.join(BUILD_DIR, "certs")
-
+BUILD_DIR  = "/tmp/build"
 INPUT_IPA  = os.path.join(BUILD_DIR, "ksign_original.ipa")
-OUTPUT_IPA = os.path.join(BUILD_DIR, "ksign_bundled.ipa")
+BUNDLE_DIR = os.path.join(BUILD_DIR, "bundled")   # one sub-dir per cert
 
 def find_app_bundle(extract_dir):
     """Find the .app folder inside Payload/."""
@@ -46,25 +35,11 @@ def find_app_bundle(extract_dir):
         sys.exit("[ERROR] No .app bundle found in Payload/.")
     return os.path.join(payload, apps[0]), apps[0].replace(".app", "")
 
-def find_cert_files():
-    """Locate p12, mobileprovision, and password from /tmp/build/."""
-    p12_path = open(os.path.join(BUILD_DIR, "p12_path.txt")).read().strip()
-    mp_path  = open(os.path.join(BUILD_DIR, "mp_path.txt")).read().strip()
-    password = open(os.path.join(BUILD_DIR, "cert_password.txt")).read().strip()
-
-    if not os.path.exists(p12_path):
-        sys.exit(f"[ERROR] .p12 not found at {p12_path}")
-    if not os.path.exists(mp_path):
-        sys.exit(f"[ERROR] .mobileprovision not found at {mp_path}")
-
-    return p12_path, mp_path, password
-
 def read_mobileprovision_name(mp_path):
-    """Extract the profile name from a .mobileprovision using grep on the plist XML."""
-    import subprocess, re
+    """Extract the profile name from a .mobileprovision using regex on the plist XML."""
+    import re
     try:
         raw = open(mp_path, "rb").read().decode("utf-8", errors="ignore")
-        # The plist inside is XML — find Name key
         m = re.search(r'<key>Name</key>\s*<string>([^<]+)</string>', raw)
         if m:
             return m.group(1)
@@ -73,10 +48,6 @@ def read_mobileprovision_name(mp_path):
     return "Certificate"
 
 def create_ksign_import_manifest(cert_folder_name, p12_name, mp_name, has_password):
-    """
-    Create a .ksign import manifest — KSign's internal JSON format.
-    This mirrors what KSign generates when you export a certificate.
-    """
     manifest = {
         "version": 1,
         "type": "certificate_bundle",
@@ -86,90 +57,135 @@ def create_ksign_import_manifest(cert_folder_name, p12_name, mp_name, has_passwo
             "mobileprovision": mp_name,
         },
         "hasPassword": has_password,
-        "autoImport": True
+        "autoImport": True,
     }
     return json.dumps(manifest, indent=2)
 
 def inject_certs_into_ipa(input_ipa, output_ipa, p12_path, mp_path, password):
-    print(f"Input IPA  : {input_ipa}")
-    print(f"Output IPA : {output_ipa}")
+    print(f"  Input IPA  : {input_ipa}")
+    print(f"  Output IPA : {output_ipa}")
 
     with tempfile.TemporaryDirectory() as tmpdir:
         # Extract IPA
-        print("Extracting IPA...")
         with zipfile.ZipFile(input_ipa, "r") as zf:
             zf.extractall(tmpdir)
 
         app_path, app_name = find_app_bundle(tmpdir)
-        print(f"App bundle : {app_name}.app")
+        print(f"  App bundle : {app_name}.app")
 
-        # Normalize cert file names for KSign compatibility
         p12_name = "cert.p12"
         mp_name  = "cert.mobileprovision"
         cert_folder_name = read_mobileprovision_name(mp_path)
-        # Sanitize folder name
-        cert_folder_name = "".join(c for c in cert_folder_name if c.isalnum() or c in "._- ")[:40]
-        if not cert_folder_name:
-            cert_folder_name = "BundledCert"
+        cert_folder_name = "".join(
+            c for c in cert_folder_name if c.isalnum() or c in "._- "
+        )[:40].strip() or "BundledCert"
 
-        # ── Injection point 1: Documents/Certificates/ ───────────────────────
-        # KSign stores certs here and scans on startup
+        # ── Injection 1: Documents/Certificates/ ────────────────────────────
         cert_dest_dir = os.path.join(app_path, "Documents", "Certificates", cert_folder_name)
         os.makedirs(cert_dest_dir, exist_ok=True)
-
         shutil.copy2(p12_path, os.path.join(cert_dest_dir, p12_name))
         shutil.copy2(mp_path,  os.path.join(cert_dest_dir, mp_name))
-
         if password:
             with open(os.path.join(cert_dest_dir, "password.txt"), "w") as f:
                 f.write(password)
-            print(f"  ✓ password.txt injected")
+        print(f"  ✓ Injected → Documents/Certificates/{cert_folder_name}/")
 
-        print(f"  ✓ Certs injected → Documents/Certificates/{cert_folder_name}/")
-
-        # ── Injection point 2: import.ksign manifest ──────────────────────────
-        # Some KSign versions check for this file on launch and trigger import
+        # ── Injection 2: import.ksign manifest ──────────────────────────────
         manifest_json = create_ksign_import_manifest(
             cert_folder_name, p12_name, mp_name, bool(password)
         )
-        manifest_path = os.path.join(app_path, "import.ksign")
-        with open(manifest_path, "w") as f:
+        with open(os.path.join(app_path, "import.ksign"), "w") as f:
             f.write(manifest_json)
-        print(f"  ✓ import.ksign manifest written")
+        print(f"  ✓ import.ksign written")
 
-        # ── Injection point 3: Library/Application Support/ ──────────────────
-        # Alternative path some KSign forks use
-        lib_cert_dir = os.path.join(app_path, "Library", "Application Support",
-                                    "KSign", "Certificates", cert_folder_name)
+        # ── Injection 3: Library/Application Support/ ────────────────────────
+        lib_cert_dir = os.path.join(
+            app_path, "Library", "Application Support",
+            "KSign", "Certificates", cert_folder_name
+        )
         os.makedirs(lib_cert_dir, exist_ok=True)
         shutil.copy2(p12_path, os.path.join(lib_cert_dir, p12_name))
         shutil.copy2(mp_path,  os.path.join(lib_cert_dir, mp_name))
         if password:
             with open(os.path.join(lib_cert_dir, "password.txt"), "w") as f:
                 f.write(password)
-        print(f"  ✓ Certs also injected → Library/Application Support/KSign/Certificates/")
+        print(f"  ✓ Injected → Library/Application Support/KSign/Certificates/")
 
-        # ── Repack IPA ────────────────────────────────────────────────────────
-        print("Repacking IPA...")
+        # ── Repack ───────────────────────────────────────────────────────────
+        os.makedirs(os.path.dirname(output_ipa), exist_ok=True)
         with zipfile.ZipFile(output_ipa, "w", compression=zipfile.ZIP_DEFLATED,
                              compresslevel=6) as zout:
             for root, dirs, files in os.walk(tmpdir):
                 for fname in files:
-                    fpath = os.path.join(root, fname)
+                    fpath   = os.path.join(root, fname)
                     arcname = os.path.relpath(fpath, tmpdir)
                     zout.write(fpath, arcname)
 
     size = os.path.getsize(output_ipa)
-    print(f"\n✅ Bundled IPA ready: {output_ipa} ({size:,} bytes)")
+    print(f"  ✅ Done: {output_ipa} ({size:,} bytes)")
+    return output_ipa
 
 def main():
-    p12_path, mp_path, password = find_cert_files()
+    manifest_path = os.path.join(BUILD_DIR, "certs_manifest.json")
+    if not os.path.exists(manifest_path):
+        sys.exit(f"[ERROR] certs_manifest.json not found at {manifest_path}. Run fetch_cert.py first.")
 
-    print(f"P12  : {p12_path}")
-    print(f"MP   : {mp_path}")
-    print(f"Pass : {'[set]' if password else '[empty]'}")
+    with open(manifest_path) as f:
+        cert_bundles = json.load(f)
 
-    inject_certs_into_ipa(INPUT_IPA, OUTPUT_IPA, p12_path, mp_path, password)
+    if not cert_bundles:
+        sys.exit("[ERROR] certs_manifest.json is empty.")
+
+    if not os.path.exists(INPUT_IPA):
+        sys.exit(f"[ERROR] Original IPA not found at {INPUT_IPA}. Run fetch_ipa.py first.")
+
+    os.makedirs(BUNDLE_DIR, exist_ok=True)
+
+    # Track output IPAs for downstream (sign + generate_assets)
+    output_manifest = []
+
+    for i, bundle in enumerate(cert_bundles):
+        folder   = bundle["folder"]
+        p12_path = bundle["p12_path"]
+        mp_path  = bundle["mp_path"]
+        password = bundle.get("password", "")
+
+        print(f"\n[{i+1}/{len(cert_bundles)}] Bundling cert: {folder}")
+
+        out_dir = os.path.join(BUNDLE_DIR, folder)
+        os.makedirs(out_dir, exist_ok=True)
+        output_ipa = os.path.join(out_dir, "ksign_bundled.ipa")
+
+        try:
+            inject_certs_into_ipa(INPUT_IPA, output_ipa, p12_path, mp_path, password)
+            output_manifest.append({
+                "folder":      folder,
+                "p12_path":    p12_path,
+                "mp_path":     mp_path,
+                "password":    password,
+                "bundled_ipa": output_ipa,
+            })
+        except Exception as e:
+            print(f"  [ERROR] Failed to bundle cert '{folder}': {e}")
+            continue
+
+    if not output_manifest:
+        sys.exit("[ERROR] No IPAs were successfully bundled.")
+
+    # Write updated manifest for sign step
+    out_manifest_path = os.path.join(BUILD_DIR, "bundled_manifest.json")
+    with open(out_manifest_path, "w") as f:
+        json.dump(output_manifest, f, indent=2)
+
+    print(f"\n✅ {len(output_manifest)} bundled IPA(s) ready.")
+    for item in output_manifest:
+        print(f"  • {item['folder']} → {item['bundled_ipa']}")
+
+    # Legacy single-cert compat
+    first = output_manifest[0]
+    with open(os.path.join(BUILD_DIR, "p12_path.txt"),      "w") as f: f.write(first["p12_path"])
+    with open(os.path.join(BUILD_DIR, "mp_path.txt"),       "w") as f: f.write(first["mp_path"])
+    with open(os.path.join(BUILD_DIR, "cert_password.txt"), "w") as f: f.write(first["password"])
 
 if __name__ == "__main__":
     main()
