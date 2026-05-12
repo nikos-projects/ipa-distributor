@@ -1,0 +1,10 @@
+{
+  "version": "v1.5.1",
+  "ipa_url": "https://nikos-projects.github.io/ksign-hub/ksign_v1.5.1_signed.ipa",
+  "plist_url": "https://nikos-projects.github.io/ksign-hub/manifest.plist",
+  "sha256": "6d955de91a356a427267d1064574c69b2f3b6ce265f72eb5c73be7f6a6c17bc5",
+  "size_bytes": 14158320,
+  "build_time": "2026-05-12 17:49",
+  "bundle_id": "com.nyasami.ksign",
+  "app_name": "KSign"
+}
