@@ -77,6 +77,7 @@ def main():
             "signed_ipa":     output,
             "p12_path":       p12,
             "mp_path":        mp,
+            "password":       passwd,
             "bundle_id":      entry.get("bundle_id",      ""),
             "bundle_version": entry.get("bundle_version", ""),
         })
