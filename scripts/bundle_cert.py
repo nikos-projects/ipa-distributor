@@ -2,16 +2,17 @@
 """
 bundle_cert.py
 
-For EACH certificate bundle in /tmp/build/certs_manifest.json:
-  - Injects the cert into a fresh copy of ksign_original.ipa
-  - Patches Info.plist so each cert gets a UNIQUE CFBundleIdentifier
-    and CFBundleVersion — iOS uses these to distinguish OTA installs.
-    Without unique values every cert looks like the same app and iOS
-    refuses with "KSign couldn't be installed, try again later".
-  - Outputs /tmp/build/bundled/<folder_name>/ksign_bundled.ipa
+For EACH app in /tmp/build/apps_manifest.json ×
+    EACH certificate bundle in /tmp/build/certs_manifest.json:
 
-The patched values are written to the manifest so generate_assets.py
-can mirror them exactly in the per-cert manifest.plist.
+  - Injects the cert into a fresh copy of the app's original.ipa
+  - Patches Info.plist so each (app × cert) combo gets a UNIQUE
+    CFBundleIdentifier and CFBundleVersion — iOS uses these to tell
+    OTA installs apart.
+  - Outputs: /tmp/build/bundled/<app_name>/<cert_folder>/ksign_bundled.ipa
+
+The patched values are written to bundled_manifest.json so
+generate_assets.py can mirror them in the per-cert manifest.plist.
 """
 
 import os
@@ -24,7 +25,6 @@ import zipfile
 import tempfile
 
 BUILD_DIR  = "/tmp/build"
-INPUT_IPA  = os.path.join(BUILD_DIR, "ksign_original.ipa")
 BUNDLE_DIR = os.path.join(BUILD_DIR, "bundled")
 
 BASE_BUNDLE_ID = os.environ.get("BUNDLE_ID", "com.nyasami.ksign")
@@ -55,37 +55,27 @@ def read_mobileprovision_name(mp_path):
 
 def create_ksign_import_manifest(cert_folder_name, p12_name, mp_name, has_password):
     return json.dumps({
-        "version": 1,
-        "type": "certificate_bundle",
-        "name": cert_folder_name,
-        "files": {"p12": p12_name, "mobileprovision": mp_name},
+        "version":    1,
+        "type":       "certificate_bundle",
+        "name":       cert_folder_name,
+        "files":      {"p12": p12_name, "mobileprovision": mp_name},
         "hasPassword": has_password,
         "autoImport": True,
     }, indent=2)
 
 
 def patch_info_plist(plist_path, patches: dict):
-    """
-    Read an Info.plist (binary OR XML), apply key→value patches, write back.
-
-    Uses plistlib so binary plists are handled automatically — no regex,
-    no encoding issues, works regardless of how Xcode serialised the file.
-    Raises KeyError if a required key is absent from the plist.
-    """
     with open(plist_path, "rb") as f:
         data = plistlib.load(f)
-
     for key, value in patches.items():
         if key not in data:
             raise KeyError(f"Key '{key}' not found in Info.plist")
         data[key] = value
-
     with open(plist_path, "wb") as f:
         plistlib.dump(data, f, fmt=plistlib.FMT_XML)
 
 
 def safe_slug(name, maxlen=24):
-    """Lowercase alphanumeric slug, safe for use as a bundle-id component."""
     slug = re.sub(r"[^a-z0-9]", "", name.lower())
     return slug[:maxlen] or "cert"
 
@@ -94,12 +84,6 @@ def safe_slug(name, maxlen=24):
 
 def inject_certs_into_ipa(input_ipa, output_ipa, p12_path, mp_path, password,
                           unique_bundle_id, unique_bundle_version):
-    """
-    Extract IPA → inject certs → patch Info.plist identifiers → repack.
-
-    unique_bundle_id      — written to CFBundleIdentifier in Info.plist
-    unique_bundle_version — written to CFBundleVersion AND CFBundleShortVersionString
-    """
     print(f"  Input IPA  : {input_ipa}")
     print(f"  Output IPA : {output_ipa}")
     print(f"  Bundle ID  : {unique_bundle_id}")
@@ -117,9 +101,8 @@ def inject_certs_into_ipa(input_ipa, output_ipa, p12_path, mp_path, password,
         if not os.path.exists(info_plist_path):
             raise FileNotFoundError("Info.plist not found inside .app bundle")
 
-        import plistlib as _pl
         with open(info_plist_path, "rb") as _f:
-            _data = _pl.load(_f)
+            _data = plistlib.load(_f)
 
         patches = {
             "CFBundleIdentifier": unique_bundle_id,
@@ -132,8 +115,8 @@ def inject_certs_into_ipa(input_ipa, output_ipa, p12_path, mp_path, password,
         print(f"  ✓ Info.plist patched ({len(patches)} keys)")
 
         # ── Cert injection ───────────────────────────────────────────────────
-        p12_name = "cert.p12"
-        mp_name  = "cert.mobileprovision"
+        p12_name         = "cert.p12"
+        mp_name          = "cert.mobileprovision"
         cert_folder_name = read_mobileprovision_name(mp_path)
         cert_folder_name = "".join(
             c for c in cert_folder_name if c.isalnum() or c in "._- "
@@ -186,62 +169,83 @@ def inject_certs_into_ipa(input_ipa, output_ipa, p12_path, mp_path, password,
 # ── main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    manifest_path = os.path.join(BUILD_DIR, "certs_manifest.json")
-    if not os.path.exists(manifest_path):
-        sys.exit(f"[ERROR] certs_manifest.json not found. Run fetch_cert.py first.")
+    certs_manifest_path = os.path.join(BUILD_DIR, "certs_manifest.json")
+    apps_manifest_path  = os.path.join(BUILD_DIR, "apps_manifest.json")
 
-    with open(manifest_path) as f:
+    if not os.path.exists(certs_manifest_path):
+        sys.exit(f"[ERROR] certs_manifest.json not found. Run fetch_cert.py first.")
+    if not os.path.exists(apps_manifest_path):
+        sys.exit(f"[ERROR] apps_manifest.json not found. Run fetch_ipa.py first.")
+
+    with open(certs_manifest_path) as f:
         cert_bundles = json.load(f)
+    with open(apps_manifest_path) as f:
+        apps = json.load(f)
 
     if not cert_bundles:
         sys.exit("[ERROR] certs_manifest.json is empty.")
-
-    if not os.path.exists(INPUT_IPA):
-        sys.exit(f"[ERROR] Original IPA not found at {INPUT_IPA}. Run fetch_ipa.py first.")
+    if not apps:
+        sys.exit("[ERROR] apps_manifest.json is empty.")
 
     os.makedirs(BUNDLE_DIR, exist_ok=True)
     output_manifest = []
+    total = len(apps) * len(cert_bundles)
+    n     = 0
 
-    for i, bundle in enumerate(cert_bundles):
-        folder   = bundle["folder"]
-        p12_path = bundle["p12_path"]
-        mp_path  = bundle["mp_path"]
-        password = bundle.get("password", "")
+    for app in apps:
+        app_name  = app["app_name"]
+        input_ipa = app["ipa_path"]
+        version   = app["version"]
 
-        print(f"\n[{i+1}/{len(cert_bundles)}] Bundling cert: {folder}")
-
-        # Build unique bundle-id: com.nyasami.ksign.globaltakeoff
-        # safe_slug strips everything non-alphanumeric so it's a valid
-        # bundle-id component regardless of what's in the folder name.
-        id_suffix        = safe_slug(folder)
-        unique_bundle_id = f"{BASE_BUNDLE_ID}.{id_suffix}"
-
-        # Unique version: 1.0.<index> — simple, always distinct
-        unique_bundle_version = f"1.0.{i}"
-
-        out_dir    = os.path.join(BUNDLE_DIR, folder)
-        os.makedirs(out_dir, exist_ok=True)
-        output_ipa = os.path.join(out_dir, "ksign_bundled.ipa")
-
-        try:
-            inject_certs_into_ipa(
-                INPUT_IPA, output_ipa,
-                p12_path, mp_path, password,
-                unique_bundle_id,
-                unique_bundle_version,
-            )
-            output_manifest.append({
-                "folder":         folder,
-                "p12_path":       p12_path,
-                "mp_path":        mp_path,
-                "password":       password,
-                "bundled_ipa":    output_ipa,
-                "bundle_id":      unique_bundle_id,      # ← passed to generate_assets
-                "bundle_version": unique_bundle_version, # ← passed to generate_assets
-            })
-        except Exception as e:
-            print(f"  [ERROR] Failed to bundle cert '{folder}': {e}")
+        if not os.path.exists(input_ipa):
+            print(f"[WARN] IPA not found for {app_name}: {input_ipa} — skipping.")
             continue
+
+        print(f"\n══ App: {app_name} @ {version} ({len(cert_bundles)} cert(s))")
+
+        for i, bundle in enumerate(cert_bundles):
+            n    += 1
+            folder   = bundle["folder"]
+            p12_path = bundle["p12_path"]
+            mp_path  = bundle["mp_path"]
+            password = bundle.get("password", "")
+
+            print(f"\n  [{n}/{total}] Cert: {folder}")
+
+            # Unique bundle-id: <base>.<appslug>.<certslug>
+            # e.g. com.nyasami.ksign.playbox.globaltakeoff
+            app_slug  = safe_slug(app_name)
+            cert_slug = safe_slug(folder)
+            unique_bundle_id = f"{BASE_BUNDLE_ID}.{app_slug}.{cert_slug}"
+
+            # Unique version: <app_index>.<cert_index>
+            unique_bundle_version = f"1.{apps.index(app)}.{i}"
+
+            out_dir    = os.path.join(BUNDLE_DIR, app_name, folder)
+            os.makedirs(out_dir, exist_ok=True)
+            output_ipa = os.path.join(out_dir, "ksign_bundled.ipa")
+
+            try:
+                inject_certs_into_ipa(
+                    input_ipa, output_ipa,
+                    p12_path, mp_path, password,
+                    unique_bundle_id,
+                    unique_bundle_version,
+                )
+                output_manifest.append({
+                    "app_name":       app_name,
+                    "app_version":    version,
+                    "folder":         folder,
+                    "p12_path":       p12_path,
+                    "mp_path":        mp_path,
+                    "password":       password,
+                    "bundled_ipa":    output_ipa,
+                    "bundle_id":      unique_bundle_id,
+                    "bundle_version": unique_bundle_version,
+                })
+            except Exception as e:
+                print(f"  [ERROR] Failed to bundle '{app_name}' × '{folder}': {e}")
+                continue
 
     if not output_manifest:
         sys.exit("[ERROR] No IPAs were successfully bundled.")
@@ -250,12 +254,11 @@ def main():
     with open(out_manifest_path, "w") as f:
         json.dump(output_manifest, f, indent=2)
 
-    print(f"\n✅ {len(output_manifest)} bundled IPA(s) ready.")
+    print(f"\n✅ {len(output_manifest)}/{total} bundled IPA(s) ready.")
     for item in output_manifest:
-        print(f"  • {item['folder']}")
-        print(f"      bundle_id  : {item['bundle_id']}")
-        print(f"      version    : {item['bundle_version']}")
-        print(f"      ipa        : {item['bundled_ipa']}")
+        print(f"  • {item['app_name']} × {item['folder']}")
+        print(f"      bundle_id : {item['bundle_id']}")
+        print(f"      version   : {item['bundle_version']}")
 
     # Legacy single-cert compat
     first = output_manifest[0]
