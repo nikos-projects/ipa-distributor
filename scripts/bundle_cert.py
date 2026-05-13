@@ -18,6 +18,7 @@ import os
 import sys
 import json
 import re
+import plistlib
 import shutil
 import zipfile
 import tempfile
@@ -63,22 +64,24 @@ def create_ksign_import_manifest(cert_folder_name, p12_name, mp_name, has_passwo
     }, indent=2)
 
 
-def plist_set_string(plist_bytes, key, value):
+def patch_info_plist(plist_path, patches: dict):
     """
-    Replace the <string> value that immediately follows <key>KEY</key>
-    in a binary or text plist that has been decoded to bytes.
+    Read an Info.plist (binary OR XML), apply key→value patches, write back.
 
-    Works on text XML plists only (IPA Info.plist is always XML).
-    Raises ValueError if the key is not found.
+    Uses plistlib so binary plists are handled automatically — no regex,
+    no encoding issues, works regardless of how Xcode serialised the file.
+    Raises KeyError if a required key is absent from the plist.
     """
-    text = plist_bytes.decode("utf-8", errors="replace")
+    with open(plist_path, "rb") as f:
+        data = plistlib.load(f)
 
-    pattern = rf'(<key>{re.escape(key)}</key>\s*<string>)[^<]*(</string>)'
-    replacement = rf'\g<1>{re.escape(value)}\2'
-    new_text, n = re.subn(pattern, replacement, text)
-    if n == 0:
-        raise ValueError(f"Key '{key}' not found in Info.plist")
-    return new_text.encode("utf-8")
+    for key, value in patches.items():
+        if key not in data:
+            raise KeyError(f"Key '{key}' not found in Info.plist")
+        data[key] = value
+
+    with open(plist_path, "wb") as f:
+        plistlib.dump(data, f, fmt=plistlib.FMT_XML)
 
 
 def safe_slug(name, maxlen=24):
@@ -114,25 +117,19 @@ def inject_certs_into_ipa(input_ipa, output_ipa, p12_path, mp_path, password,
         if not os.path.exists(info_plist_path):
             raise FileNotFoundError("Info.plist not found inside .app bundle")
 
-        plist_bytes = open(info_plist_path, "rb").read()
+        import plistlib as _pl
+        with open(info_plist_path, "rb") as _f:
+            _data = _pl.load(_f)
 
-        # CFBundleIdentifier — iOS uses this as the app's unique identity.
-        # Two IPAs with the same value = iOS refuses the second install.
-        plist_bytes = plist_set_string(plist_bytes, "CFBundleIdentifier", unique_bundle_id)
+        patches = {
+            "CFBundleIdentifier": unique_bundle_id,
+            "CFBundleVersion":    unique_bundle_version,
+        }
+        if "CFBundleShortVersionString" in _data:
+            patches["CFBundleShortVersionString"] = unique_bundle_version
 
-        # CFBundleVersion — must also be unique; iOS caches (id, version) pairs.
-        plist_bytes = plist_set_string(plist_bytes, "CFBundleVersion", unique_bundle_version)
-
-        # CFBundleShortVersionString — what users see; keep consistent.
-        try:
-            plist_bytes = plist_set_string(plist_bytes, "CFBundleShortVersionString",
-                                           unique_bundle_version)
-        except ValueError:
-            pass  # optional key, skip if absent
-
-        with open(info_plist_path, "wb") as f:
-            f.write(plist_bytes)
-        print(f"  ✓ Info.plist patched")
+        patch_info_plist(info_plist_path, patches)
+        print(f"  ✓ Info.plist patched ({len(patches)} keys)")
 
         # ── Cert injection ───────────────────────────────────────────────────
         p12_name = "cert.p12"
