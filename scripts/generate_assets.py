@@ -84,12 +84,31 @@ def make_index_html(apps_data, base_url, build_time):
             cert_rows = ""
             for e in sorted(entries, key=lambda x: x["cert_folder"]):
                 install_url = f"itms-services://?action=download-manifest&url={e['manifest_url']}"
+
+                days  = e.get("cert_days_left")
+                expiry = e.get("cert_expiry", "unknown")
+
+                if days is None:
+                    badge_cls  = "expiry-unknown"
+                    badge_text = "Expiry unknown"
+                elif days < 0:
+                    badge_cls  = "expiry-dead"
+                    badge_text = f"Expired {abs(days)}d ago"
+                elif days <= 7:
+                    badge_cls  = "expiry-critical"
+                    badge_text = f"{days}d left"
+                elif days <= 30:
+                    badge_cls  = "expiry-warn"
+                    badge_text = f"{days}d left"
+                else:
+                    badge_cls  = "expiry-ok"
+                    badge_text = f"{days}d left"
+
                 cert_rows += f"""
           <tr>
             <td class="cert-name">{e['cert_folder']}</td>
-            <td><a class="install-btn" href="{install_url}">
-              ⬇ Install
-            </a></td>
+            <td><span class="expiry-badge {badge_cls}" title="Expires {expiry}">{badge_text}</span></td>
+            <td><a class="install-btn" href="{install_url}">⬇ Install</a></td>
             <td class="bundle-id">{e['bundle_id']}</td>
           </tr>"""
 
@@ -104,6 +123,7 @@ def make_index_html(apps_data, base_url, build_time):
           <thead>
             <tr>
               <th>Certificate</th>
+              <th>Expiry</th>
               <th>Install</th>
               <th>Bundle ID</th>
             </tr>
@@ -226,6 +246,25 @@ def make_index_html(apps_data, base_url, build_time):
     }}
     .install-btn:hover {{ opacity: .85; }}
 
+    .expiry-badge {{
+      display: inline-block;
+      padding: .25rem .6rem;
+      border-radius: 99px;
+      font-size: .78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }}
+    .expiry-ok       {{ background: #14532d; color: #86efac; }}
+    .expiry-warn     {{ background: #713f12; color: #fde68a; }}
+    .expiry-critical {{ background: #7f1d1d; color: #fca5a5; animation: pulse 1.5s infinite; }}
+    .expiry-dead     {{ background: #1f1f2e; color: #6b7280; text-decoration: line-through; }}
+    .expiry-unknown  {{ background: #1f1f2e; color: #6b7280; }}
+
+    @keyframes pulse {{
+      0%, 100% {{ opacity: 1; }}
+      50%       {{ opacity: .55; }}
+    }}
+
     footer {{
       text-align: center;
       color: #3a3a55;
@@ -307,6 +346,8 @@ def main():
             "app_version":   app_version,
             "manifest_url":  manifest_url,
             "bundle_id":     bundle_id,
+            "cert_expiry":   entry.get("cert_expiry",    "unknown"),
+            "cert_days_left": entry.get("cert_days_left", None),
         })
 
     build_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
