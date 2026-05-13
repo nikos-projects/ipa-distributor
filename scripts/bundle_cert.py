@@ -175,35 +175,15 @@ def inject_certs_into_ipa(input_ipa, output_ipa, p12_path, mp_path, password,
             c for c in cert_folder_name if c.isalnum() or c in "._- "
         )[:40].strip() or "BundledCert"
 
-        # Injection 1: Documents/Certificates/
-        cert_dest_dir = os.path.join(app_path, "Documents", "Certificates", cert_folder_name)
-        os.makedirs(cert_dest_dir, exist_ok=True)
-        shutil.copy2(p12_path, os.path.join(cert_dest_dir, p12_name))
-        shutil.copy2(mp_path,  os.path.join(cert_dest_dir, mp_name))
+        # Correct injection path per Asami's v1.5 release notes:
+        # Ksign.app/signing-assets/<folder>/cert.p12 + cert.mobileprovision + cert.txt
+        signing_assets_dir = os.path.join(app_path, "signing-assets", cert_folder_name)
+        os.makedirs(signing_assets_dir, exist_ok=True)
+        shutil.copy2(p12_path, os.path.join(signing_assets_dir, "cert.p12"))
+        shutil.copy2(mp_path,  os.path.join(signing_assets_dir, "cert.mobileprovision"))
         if password:
-            open(os.path.join(cert_dest_dir, "password.txt"), "w").write(password)
-        print(f"  ✓ Injected → Documents/Certificates/{cert_folder_name}/")
-
-        # Injection 2: import.ksign manifest
-        manifest_json = create_ksign_import_manifest(
-            cert_folder_name, p12_name, mp_name, bool(password)
-        )
-        open(os.path.join(app_path, "import.ksign"), "w").write(manifest_json)
-        print(f"  ✓ import.ksign written")
-
-        # Injection 3: Library/Application Support/Certificates/<UUID>/
-        # Feather/KSign stores each cert in a UUID-named subfolder
-        cert_uuid    = str(uuid.uuid4())
-        lib_cert_dir = os.path.join(
-            app_path, "Library", "Application Support",
-            "Certificates", cert_uuid
-        )
-        os.makedirs(lib_cert_dir, exist_ok=True)
-        shutil.copy2(p12_path, os.path.join(lib_cert_dir, p12_name))
-        shutil.copy2(mp_path,  os.path.join(lib_cert_dir, mp_name))
-        if password:
-            open(os.path.join(lib_cert_dir, "password.txt"), "w").write(password)
-        print(f"  ✓ Injected → Library/Application Support/Certificates/{cert_uuid}/")
+            open(os.path.join(signing_assets_dir, "cert.txt"), "w").write(password)
+        print(f"  ✓ Injected → signing-assets/{cert_folder_name}/")
 
         # ── Repack ───────────────────────────────────────────────────────────
         os.makedirs(os.path.dirname(output_ipa), exist_ok=True)
