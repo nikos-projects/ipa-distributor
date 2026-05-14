@@ -18,7 +18,7 @@
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.nyasami.ksign.ksign.wulingpowercorporation</string>
+        <string>nya.asami.ksign.wulingpowercorporation</string>
         <key>bundle-version</key>
         <string>1.0.1</string>
         <key>kind</key>

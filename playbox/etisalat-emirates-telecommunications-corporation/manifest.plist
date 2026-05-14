@@ -18,7 +18,7 @@
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.nyasami.ksign.playbox.etisalatemiratestelecomm</string>
+        <string>com.philipp.PlayBox.etisalatemiratestelecomm</string>
         <key>bundle-version</key>
         <string>1.1.25</string>
         <key>kind</key>

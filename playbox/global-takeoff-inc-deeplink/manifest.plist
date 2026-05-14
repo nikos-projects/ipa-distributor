@@ -18,7 +18,7 @@
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.nyasami.ksign.playbox.globaltakeoffincdeeplink</string>
+        <string>com.philipp.PlayBox.globaltakeoffincdeeplink</string>
         <key>bundle-version</key>
         <string>1.1.22</string>
         <key>kind</key>

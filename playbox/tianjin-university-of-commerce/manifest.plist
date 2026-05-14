@@ -18,7 +18,7 @@
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.nyasami.ksign.playbox.tianjinuniversityofcomme</string>
+        <string>com.philipp.PlayBox.tianjinuniversityofcomme</string>
         <key>bundle-version</key>
         <string>1.1.6</string>
         <key>kind</key>

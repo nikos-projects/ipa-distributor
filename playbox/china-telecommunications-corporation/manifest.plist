@@ -18,7 +18,7 @@
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.nyasami.ksign.playbox.chinatelecommunicationsc</string>
+        <string>com.philipp.PlayBox.chinatelecommunicationsc</string>
         <key>bundle-version</key>
         <string>1.1.32</string>
         <key>kind</key>

@@ -18,7 +18,7 @@
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.nyasami.ksign.ksign.globaltakeoffinchls</string>
+        <string>nya.asami.ksign.globaltakeoffinchls</string>
         <key>bundle-version</key>
         <string>1.0.20</string>
         <key>kind</key>

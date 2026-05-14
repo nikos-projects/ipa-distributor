@@ -18,7 +18,7 @@
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.nyasami.ksign.playbox.qingdaoruralcommercialba</string>
+        <string>com.philipp.PlayBox.qingdaoruralcommercialba</string>
         <key>bundle-version</key>
         <string>1.1.7</string>
         <key>kind</key>

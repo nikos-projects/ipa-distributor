@@ -18,7 +18,7 @@
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.nyasami.ksign.playbox.commissiononelectionscom</string>
+        <string>com.philipp.PlayBox.commissiononelectionscom</string>
         <key>bundle-version</key>
         <string>1.1.31</string>
         <key>kind</key>

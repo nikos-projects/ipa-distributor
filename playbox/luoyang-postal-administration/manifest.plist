@@ -18,7 +18,7 @@
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.nyasami.ksign.playbox.luoyangpostaladministrat</string>
+        <string>com.philipp.PlayBox.luoyangpostaladministrat</string>
         <key>bundle-version</key>
         <string>1.1.14</string>
         <key>kind</key>

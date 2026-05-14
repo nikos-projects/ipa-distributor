@@ -18,7 +18,7 @@
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.nyasami.ksign.playbox.globaltakeoffinchls</string>
+        <string>com.philipp.PlayBox.globaltakeoffinchls</string>
         <key>bundle-version</key>
         <string>1.1.20</string>
         <key>kind</key>

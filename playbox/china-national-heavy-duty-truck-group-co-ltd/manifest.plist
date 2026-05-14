@@ -18,7 +18,7 @@
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.nyasami.ksign.playbox.chinanationalheavydutytr</string>
+        <string>com.philipp.PlayBox.chinanationalheavydutytr</string>
         <key>bundle-version</key>
         <string>1.1.33</string>
         <key>kind</key>

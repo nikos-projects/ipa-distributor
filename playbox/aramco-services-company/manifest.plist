@@ -18,7 +18,7 @@
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.nyasami.ksign.playbox.aramcoservicescompany</string>
+        <string>com.philipp.PlayBox.aramcoservicescompany</string>
         <key>bundle-version</key>
         <string>1.1.36</string>
         <key>kind</key>

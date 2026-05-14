@@ -18,7 +18,7 @@
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.nyasami.ksign.playbox.vietnamairlinesjsc</string>
+        <string>com.philipp.PlayBox.vietnamairlinesjsc</string>
         <key>bundle-version</key>
         <string>1.1.5</string>
         <key>kind</key>

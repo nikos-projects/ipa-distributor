@@ -18,7 +18,7 @@
       <key>metadata</key>
       <dict>
         <key>bundle-identifier</key>
-        <string>com.nyasami.ksign.ksign.chinaacademyofrailwaysci</string>
+        <string>nya.asami.ksign.chinaacademyofrailwaysci</string>
         <key>bundle-version</key>
         <string>1.0.34</string>
         <key>kind</key>
