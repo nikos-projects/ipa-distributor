@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
 check_updates.py
-Reads apps from <repo_root>/appstosign.txt (one "owner/repo" per line).
-For each app, finds the latest release with a .ipa asset (ignoring .apk
-and any other non-iOS artefacts).
-Compares every cert folder in NovaCerts and all app versions against the
-last known state, then sets GitHub Actions outputs accordingly.
+Reads apps from <repo_root>/appstosign.txt — one entry per line, either:
+  - owner/repo          → looks up latest GitHub release with a .ipa asset
+  - https://…/foo.ipa  → treats the URL as a pinned direct download (always
+                          re-downloads if the cert changed; no version tracking)
+
+Lines starting with # and blank lines are ignored.
 """
 
 import os
@@ -164,7 +165,39 @@ def get_latest_ipa_for_repo(repo):
     return None, None, app_name
 
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+# ── Entry-type detection & resolution ────────────────────────────────────────
+
+def is_direct_url(entry):
+    """True if the entry looks like a direct https:// link to a .ipa file."""
+    return entry.lower().startswith("http") and entry.lower().endswith(".ipa")
+
+
+def app_name_from_url(url):
+    """Derive a slug app name from a direct URL, e.g. foo from /path/foo.ipa"""
+    base = url.rstrip("/").split("/")[-1]           # foo.ipa
+    name = re.sub(r"\.ipa$", "", base, flags=re.I) # foo
+    name = re.sub(r"[^a-zA-Z0-9_-]", "_", name)   # sanitise
+    return name or "app"
+
+
+def resolve_entry(entry):
+    """
+    Given one line from appstosign.txt, return (version, ipa_url, app_name).
+
+    Direct URL  → version is always "direct" (no version tracking; the URL
+                  itself is assumed static — user updates the line to change).
+    owner/repo  → queries GitHub releases API, picks the first .ipa asset.
+    """
+    if is_direct_url(entry):
+        app_name = app_name_from_url(entry)
+        print(f"  [direct URL] {app_name} → {entry}")
+        return "direct", entry, app_name
+
+    # Treat as owner/repo
+    return get_latest_ipa_for_repo(entry)
+
+
+
 
 def main():
     print(f"Checking cert repo : {CERT_REPO}")
@@ -179,23 +212,26 @@ def main():
 
     app_repos = load_apps()
 
-    apps_info   = []   # [{repo, app_name, version, ipa_url}, ...]
+    apps_info    = []
     should_build = FORCE or (latest_folder != last_cert)
 
-    for repo in app_repos:
-        print(f"\nChecking IPA repo  : {repo}")
-        version, ipa_url, app_name = get_latest_ipa_for_repo(repo)
+    for entry in app_repos:
+        print(f"\nChecking entry     : {entry}")
+        version, ipa_url, app_name = resolve_entry(entry)
 
-        last_version = read_state(f"last_ipa_version_{app_name}")
-        print(f"  Cached version   : {last_version}")
-        print(f"  Latest version   : {version}")
-
-        if version and version != last_version:
-            should_build = True
-            print(f"  → NEW version detected for {app_name}")
+        # Direct URLs have no trackable version — cert change alone triggers rebuild
+        if version == "direct":
+            print(f"  Direct URL — version tracking skipped, cert change triggers rebuild")
+        else:
+            last_version = read_state(f"last_ipa_version_{app_name}")
+            print(f"  Cached version   : {last_version}")
+            print(f"  Latest version   : {version}")
+            if version and version != last_version:
+                should_build = True
+                print(f"  → NEW version detected for {app_name}")
 
         apps_info.append({
-            "repo":     repo,
+            "repo":     entry,
             "app_name": app_name,
             "version":  version  or "unknown",
             "ipa_url":  ipa_url  or "",
