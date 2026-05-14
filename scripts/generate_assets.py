@@ -27,6 +27,7 @@ DEPLOY_DIR  = "/tmp/deploy"
 SIGNED_MANIFEST = os.path.join(BUILD_DIR, "signed_manifest.json")
 
 GITHUB_REPOSITORY = os.environ.get("GITHUB_REPOSITORY", "owner/repo")
+GITHUB_PAGES_URL = os.environ.get("GITHUB_PAGES_URL", "")  # Added for custom domains
 
 
 def slug(name: str) -> str:
@@ -136,7 +137,6 @@ def make_index_html(apps_data, base_url, build_time):
               <th>Certificate</th>
               <th>Expiry</th>
               <th>Install</th>
-              <th>Bundle ID</th>
             </tr>
           </thead>
           <tbody>{cert_rows}
@@ -290,7 +290,6 @@ def make_index_html(apps_data, base_url, build_time):
     .cert-table tr:last-child td {{ border-bottom: none; }}
 
     .cert-name  {{ font-weight: 500; }}
-    .bundle-id  {{ font-size: .78rem; color: #5a5a78; font-family: monospace; }}
 
     .install-btn {{
       display: inline-block;
@@ -333,7 +332,6 @@ def make_index_html(apps_data, base_url, build_time):
     }}
 
     @media (max-width: 500px) {{
-      .bundle-id {{ display: none; }}
       .cert-table {{ table-layout: fixed; width: 100%; }}
       .cert-name  {{ width: 45%; word-break: break-word; }}
       .expiry-badge {{ font-size: .7rem; padding: .2rem .4rem; }}
@@ -691,8 +689,12 @@ def main():
 
     os.makedirs(DEPLOY_DIR, exist_ok=True)
 
-    owner, repo_name = GITHUB_REPOSITORY.split("/", 1) if "/" in GITHUB_REPOSITORY else ("owner", GITHUB_REPOSITORY)
-    base_url = f"https://{owner}.github.io/{repo_name}"
+    # Use GITHUB_PAGES_URL if available (for custom domains), otherwise construct
+    if GITHUB_PAGES_URL:
+        base_url = GITHUB_PAGES_URL.rstrip('/')
+    else:
+        owner, repo_name = GITHUB_REPOSITORY.split("/", 1) if "/" in GITHUB_REPOSITORY else ("owner", GITHUB_REPOSITORY)
+        base_url = f"https://{owner}.github.io/{repo_name}"
 
     apps_data = defaultdict(list)  # app_name → [cert entries]
 
