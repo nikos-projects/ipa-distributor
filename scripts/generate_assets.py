@@ -80,6 +80,7 @@ def make_index_html(apps_data, base_url, build_time):
             entries     = apps_data[app_name]
             app_version = entries[0]["app_version"] if entries else "?"
             app_comment = entries[0].get("comment", "")
+            display_name = entries[0].get("display_name", "") or app_name
             app_slug    = slug(app_name)
 
             cert_rows = ""
@@ -110,16 +111,23 @@ def make_index_html(apps_data, base_url, build_time):
             <td class="cert-name">{e['cert_folder']}</td>
             <td><span class="expiry-badge {badge_cls}" title="Expires {expiry}">{badge_text}</span></td>
             <td><a class="install-btn" href="{install_url}">⬇ Install</a></td>
-            <td class="bundle-id">{e['bundle_id']}</td>
           </tr>"""
+
+            # Hide meaningless version strings
+            show_version = app_version not in ("direct", "unknown", "", None)
+            version_html = (
+                f'<span class="app-version">'
+                f'{app_version if app_version.startswith("v") else "v" + app_version}'
+                f'</span>'
+            ) if show_version else ""
 
             comment_html = f'\n        <p class="app-comment">{app_comment}</p>' if app_comment else ""
 
             parts.append(f"""
       <section class="app-card" id="{app_slug}">
         <div class="app-header">
-          <h2 class="app-title">{app_name}</h2>
-          <span class="app-version">{app_version if app_version.startswith("v") else "v" + app_version}</span>
+          <h2 class="app-title">{display_name}</h2>
+          {version_html}
         </div>{comment_html}
         <p class="app-subtitle">Choose a certificate to install with:</p>
         <table class="cert-table">
@@ -138,7 +146,8 @@ def make_index_html(apps_data, base_url, build_time):
         return "\n".join(parts)
 
     nav_links = " · ".join(
-        f'<a href="#{slug(a)}">{a}</a>' for a in sorted(apps_data.keys())
+        f'<a href="#{slug(a)}">{apps_data[a][0].get("display_name", "") or a}</a>'
+        for a in sorted(apps_data.keys())
     )
 
     return f"""<!DOCTYPE html>
@@ -725,6 +734,7 @@ def main():
             "cert_expiry":    entry.get("cert_expiry",    "unknown"),
             "cert_days_left": entry.get("cert_days_left", None),
             "comment":        entry.get("comment",        ""),
+            "display_name":   entry.get("display_name",   ""),
         })
 
     build_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
