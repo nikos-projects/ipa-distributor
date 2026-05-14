@@ -140,6 +140,7 @@ def main():
             "version":    version,
             "ipa_path":   dest,
             "repo":       app.get("repo", ""),
+            "comment":    app.get("comment", ""),
         })
 
     if not downloaded_apps:
