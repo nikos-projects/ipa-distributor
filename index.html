@@ -180,6 +180,58 @@
       margin-top: 3rem;
     }
 
+    .novadns-banner {
+      max-width: 780px;
+      margin: 0 auto 2rem;
+      background: linear-gradient(135deg, #0f1f10, #0a1a2a);
+      border: 2px solid #22c55e;
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      flex-wrap: wrap;
+      box-shadow: 0 0 24px rgba(34,197,94,.18);
+    }
+    .novadns-banner-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    .novadns-banner-body {
+      flex: 1;
+      min-width: 200px;
+    }
+    .novadns-banner-body strong {
+      display: block;
+      font-size: 1.05rem;
+      color: #86efac;
+      margin-bottom: .3rem;
+    }
+    .novadns-banner-body p {
+      font-size: .88rem;
+      color: #a0c0a8;
+      line-height: 1.55;
+      margin: 0;
+    }
+    .novadns-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: linear-gradient(135deg, #16a34a, #15803d);
+      color: #fff;
+      text-decoration: none;
+      font-size: .9rem;
+      font-weight: 700;
+      padding: .65rem 1.3rem;
+      border-radius: 10px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: opacity .15s;
+      box-shadow: 0 2px 12px rgba(22,163,74,.35);
+    }
+    .novadns-btn:hover { opacity: .85; }
+    .novadns-btn::before { content: "⬇ "; }
+
     @media (max-width: 500px) {
       .bundle-id { display: none; }
       .cert-table { table-layout: fixed; width: 100%; }
@@ -187,6 +239,8 @@
       .expiry-badge { font-size: .7rem; padding: .2rem .4rem; }
       .install-btn  { padding: .35rem .55rem; font-size: .8rem; }
       .app-card { padding: 1rem; }
+      .novadns-banner { flex-direction: column; text-align: center; }
+      .novadns-btn { width: 100%; justify-content: center; }
     }
   </style>
 </head>
@@ -201,7 +255,16 @@
     <a class="donate-btn" href="https://buymeacoffee.com/nyasami" target="_blank" rel="noopener">☕ Donate</a>
   </div>
 
-  <nav><a href="#dopamine">Dopamine</a> · <a href="#ksign">ksign</a> · <a href="#playbox">playbox</a> · <a href="dns-instructions/">🛡 DNS Guide</a></nav>
+  <nav><a href="#dopamine">Dopamine</a> · <a href="#ksign">ksign</a> · <a href="#playbox">playbox</a></nav>
+
+  <div class="novadns-banner">
+    <div class="novadns-banner-icon">🛡</div>
+    <div class="novadns-banner-body">
+      <strong>Install NovaDNS before installing any app</strong>
+      <p>NovaDNS blocks Apple's certificate revocation checks, keeping your signed apps working. You must install it first — tap the button now.</p>
+    </div>
+    <a class="novadns-btn" href="https://novadev.vip/resources/dns/novadns.mobileconfig">Install NovaDNS</a>
+  </div>
 
   
       <section class="app-card" id="dopamine">
@@ -223,187 +286,187 @@
           <tbody>
           <tr>
             <td class="cert-name">Aramco Services Company</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2026-09-24">125d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2026-09-24">123d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/aramco-services-company/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Beijing Zhizhangyi Inc.</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2026-08-22">92d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2026-08-22">90d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/beijing-zhizhangyi-inc/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">China Academy of Railway Sciences</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-27">889d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-27">887d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/china-academy-of-railway-sciences/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">China National Heavy Duty Truck Group Co., Ltd.</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2026-10-29">160d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2026-10-29">158d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/china-national-heavy-duty-truck-group-co-ltd/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">China Telecommunications Corporation</td>
-            <td><span class="expiry-badge expiry-warn" title="Expires 2026-06-06">15d left</span></td>
+            <td><span class="expiry-badge expiry-warn" title="Expires 2026-06-06">13d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/china-telecommunications-corporation/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (Committee Supervision)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/commission-on-elections-committee-supervision/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (Complaints Management)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/commission-on-elections-complaints-management/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (EMS Manage)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/commission-on-elections-ems-manage/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (Report)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/commission-on-elections-report/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (United politics)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/commission-on-elections-united-politics/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (oadav)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/commission-on-elections-oadav/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Etisalat - Emirates Telecommunications Corporation</td>
-            <td><span class="expiry-badge expiry-dead" title="Expires 2026-02-07">Expired 104d ago</span></td>
+            <td><span class="expiry-badge expiry-dead" title="Expires 2026-02-07">Expired 106d ago</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/etisalat-emirates-telecommunications-corporation/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Forevermark Marketing(Shanghai ) Limited</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2027-02-05">259d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2027-02-05">257d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/forevermark-marketing-shanghai-limited/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (Airtel Adhoc)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/global-takeoff-inc-airtel-adhoc/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (Deeplink)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/global-takeoff-inc-deeplink/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (Fairplay)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/global-takeoff-inc-fairplay/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (HLS)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/global-takeoff-inc-hls/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (Scope ent distribution)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/global-takeoff-inc-scope-ent-distribution/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (ads)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/global-takeoff-inc-ads/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (branch distribution)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/global-takeoff-inc-branch-distribution/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (suppose)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/global-takeoff-inc-suppose/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Guangzhou Huahan Educational & Technology Co., Ltd.</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-01-23">611d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-01-23">609d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/guangzhou-huahan-educational-technology-co-ltd/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Luoyang Postal Administration</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-08-09">810d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-08-09">808d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/luoyang-postal-administration/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">National Oilwell Varco, Inc</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2029-01-25">980d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2029-01-25">977d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/national-oilwell-varco-inc/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (DoaTYw)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/powerchina-international-group-limited-doatyw/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (HRU79V)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/powerchina-international-group-limited-hru79v/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (iWaMrs)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/powerchina-international-group-limited-iwamrs/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (j3krPY)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/powerchina-international-group-limited-j3krpy/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (nj61nO)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/powerchina-international-group-limited-nj61no/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Qingdao Rural Commercial Bank Co., Ltd</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-11-14">907d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-11-14">905d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/qingdao-rural-commercial-bank-co-ltd/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Tianjin University of Commerce</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2027-02-25">279d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2027-02-25">277d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/tianjin-university-of-commerce/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">VIETNAM AIRLINES JSC</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-21">700d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-21">698d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/vietnam-airlines-jsc/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">VIETNAM JOINT STOCK COMMERCIAL BANK FOR INDUSTRY AND TRADE</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2027-06-05">379d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2027-06-05">377d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/vietnam-joint-stock-commercial-bank-for-industry-and-trade/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Wasu Media & Networking Co., Ltd (com.wasu.demo)</td>
-            <td><span class="expiry-badge expiry-dead" title="Expires 2026-01-12">Expired 130d ago</span></td>
+            <td><span class="expiry-badge expiry-dead" title="Expires 2026-01-12">Expired 132d ago</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/wasu-media-networking-co-ltd-com-wasu-demo/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Wasu Media & Networking Co., Ltd (jicengzhili_create20250114)</td>
-            <td><span class="expiry-badge expiry-dead" title="Expires 2026-01-12">Expired 130d ago</span></td>
+            <td><span class="expiry-badge expiry-dead" title="Expires 2026-01-12">Expired 132d ago</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/wasu-media-networking-co-ltd-jicengzhili-create20250114/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Wuling Power Corporation</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2027-05-30">373d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2027-05-30">371d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/wuling-power-corporation/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">XL AXIATA, PT TBK</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2029-02-17">1003d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2029-02-17">1001d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/dopamine/xl-axiata-pt-tbk/manifest.plist">⬇ Install</a></td>
           </tr>
           </tbody>
@@ -429,187 +492,187 @@
           <tbody>
           <tr>
             <td class="cert-name">Aramco Services Company</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2026-09-24">125d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2026-09-24">123d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/aramco-services-company/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Beijing Zhizhangyi Inc.</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2026-08-22">92d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2026-08-22">90d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/beijing-zhizhangyi-inc/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">China Academy of Railway Sciences</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-27">889d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-27">887d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/china-academy-of-railway-sciences/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">China National Heavy Duty Truck Group Co., Ltd.</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2026-10-29">160d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2026-10-29">158d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/china-national-heavy-duty-truck-group-co-ltd/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">China Telecommunications Corporation</td>
-            <td><span class="expiry-badge expiry-warn" title="Expires 2026-06-06">15d left</span></td>
+            <td><span class="expiry-badge expiry-warn" title="Expires 2026-06-06">13d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/china-telecommunications-corporation/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (Committee Supervision)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/commission-on-elections-committee-supervision/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (Complaints Management)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/commission-on-elections-complaints-management/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (EMS Manage)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/commission-on-elections-ems-manage/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (Report)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/commission-on-elections-report/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (United politics)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/commission-on-elections-united-politics/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (oadav)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/commission-on-elections-oadav/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Etisalat - Emirates Telecommunications Corporation</td>
-            <td><span class="expiry-badge expiry-dead" title="Expires 2026-02-07">Expired 104d ago</span></td>
+            <td><span class="expiry-badge expiry-dead" title="Expires 2026-02-07">Expired 106d ago</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/etisalat-emirates-telecommunications-corporation/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Forevermark Marketing(Shanghai ) Limited</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2027-02-05">259d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2027-02-05">257d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/forevermark-marketing-shanghai-limited/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (Airtel Adhoc)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/global-takeoff-inc-airtel-adhoc/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (Deeplink)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/global-takeoff-inc-deeplink/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (Fairplay)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/global-takeoff-inc-fairplay/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (HLS)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/global-takeoff-inc-hls/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (Scope ent distribution)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/global-takeoff-inc-scope-ent-distribution/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (ads)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/global-takeoff-inc-ads/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (branch distribution)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/global-takeoff-inc-branch-distribution/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (suppose)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/global-takeoff-inc-suppose/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Guangzhou Huahan Educational & Technology Co., Ltd.</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-01-23">611d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-01-23">609d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/guangzhou-huahan-educational-technology-co-ltd/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Luoyang Postal Administration</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-08-09">810d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-08-09">808d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/luoyang-postal-administration/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">National Oilwell Varco, Inc</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2029-01-25">980d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2029-01-25">977d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/national-oilwell-varco-inc/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (DoaTYw)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/powerchina-international-group-limited-doatyw/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (HRU79V)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/powerchina-international-group-limited-hru79v/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (iWaMrs)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/powerchina-international-group-limited-iwamrs/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (j3krPY)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/powerchina-international-group-limited-j3krpy/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (nj61nO)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/powerchina-international-group-limited-nj61no/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Qingdao Rural Commercial Bank Co., Ltd</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-11-14">907d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-11-14">905d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/qingdao-rural-commercial-bank-co-ltd/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Tianjin University of Commerce</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2027-02-25">279d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2027-02-25">277d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/tianjin-university-of-commerce/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">VIETNAM AIRLINES JSC</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-21">700d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-21">698d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/vietnam-airlines-jsc/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">VIETNAM JOINT STOCK COMMERCIAL BANK FOR INDUSTRY AND TRADE</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2027-06-05">379d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2027-06-05">377d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/vietnam-joint-stock-commercial-bank-for-industry-and-trade/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Wasu Media & Networking Co., Ltd (com.wasu.demo)</td>
-            <td><span class="expiry-badge expiry-dead" title="Expires 2026-01-12">Expired 130d ago</span></td>
+            <td><span class="expiry-badge expiry-dead" title="Expires 2026-01-12">Expired 132d ago</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/wasu-media-networking-co-ltd-com-wasu-demo/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Wasu Media & Networking Co., Ltd (jicengzhili_create20250114)</td>
-            <td><span class="expiry-badge expiry-dead" title="Expires 2026-01-12">Expired 130d ago</span></td>
+            <td><span class="expiry-badge expiry-dead" title="Expires 2026-01-12">Expired 132d ago</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/wasu-media-networking-co-ltd-jicengzhili-create20250114/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Wuling Power Corporation</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2027-05-30">373d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2027-05-30">371d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/wuling-power-corporation/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">XL AXIATA, PT TBK</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2029-02-17">1003d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2029-02-17">1001d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/ksign/xl-axiata-pt-tbk/manifest.plist">⬇ Install</a></td>
           </tr>
           </tbody>
@@ -619,7 +682,7 @@
       <section class="app-card" id="playbox">
         <div class="app-header">
           <h2 class="app-title">playbox</h2>
-          <span class="app-version">vAP4.5_AND0.6</span>
+          <span class="app-version">vAP6.0_AND0.6</span>
         </div>
         <p class="app-comment">my own app</p>
         <p class="app-subtitle">Choose a certificate to install with:</p>
@@ -635,187 +698,187 @@
           <tbody>
           <tr>
             <td class="cert-name">Aramco Services Company</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2026-09-24">125d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2026-09-24">123d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/aramco-services-company/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Beijing Zhizhangyi Inc.</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2026-08-22">92d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2026-08-22">90d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/beijing-zhizhangyi-inc/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">China Academy of Railway Sciences</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-27">889d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-27">887d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/china-academy-of-railway-sciences/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">China National Heavy Duty Truck Group Co., Ltd.</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2026-10-29">160d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2026-10-29">158d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/china-national-heavy-duty-truck-group-co-ltd/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">China Telecommunications Corporation</td>
-            <td><span class="expiry-badge expiry-warn" title="Expires 2026-06-06">15d left</span></td>
+            <td><span class="expiry-badge expiry-warn" title="Expires 2026-06-06">13d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/china-telecommunications-corporation/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (Committee Supervision)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/commission-on-elections-committee-supervision/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (Complaints Management)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/commission-on-elections-complaints-management/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (EMS Manage)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/commission-on-elections-ems-manage/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (Report)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/commission-on-elections-report/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (United politics)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/commission-on-elections-united-politics/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Commission on Elections (oadav)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">706d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-27">704d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/commission-on-elections-oadav/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Etisalat - Emirates Telecommunications Corporation</td>
-            <td><span class="expiry-badge expiry-dead" title="Expires 2026-02-07">Expired 104d ago</span></td>
+            <td><span class="expiry-badge expiry-dead" title="Expires 2026-02-07">Expired 106d ago</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/etisalat-emirates-telecommunications-corporation/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Forevermark Marketing(Shanghai ) Limited</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2027-02-05">259d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2027-02-05">257d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/forevermark-marketing-shanghai-limited/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (Airtel Adhoc)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/global-takeoff-inc-airtel-adhoc/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (Deeplink)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/global-takeoff-inc-deeplink/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (Fairplay)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/global-takeoff-inc-fairplay/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (HLS)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/global-takeoff-inc-hls/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (Scope ent distribution)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/global-takeoff-inc-scope-ent-distribution/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (ads)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/global-takeoff-inc-ads/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (branch distribution)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/global-takeoff-inc-branch-distribution/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Global Takeoff, Inc (suppose)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">744d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-06-04">742d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/global-takeoff-inc-suppose/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Guangzhou Huahan Educational & Technology Co., Ltd.</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-01-23">611d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-01-23">609d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/guangzhou-huahan-educational-technology-co-ltd/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Luoyang Postal Administration</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-08-09">810d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-08-09">808d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/luoyang-postal-administration/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">National Oilwell Varco, Inc</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2029-01-25">980d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2029-01-25">977d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/national-oilwell-varco-inc/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (DoaTYw)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/powerchina-international-group-limited-doatyw/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (HRU79V)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/powerchina-international-group-limited-hru79v/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (iWaMrs)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/powerchina-international-group-limited-iwamrs/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (j3krPY)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/powerchina-international-group-limited-j3krpy/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">PowerChina International Group Limited (nj61nO)</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">883d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-10-21">881d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/powerchina-international-group-limited-nj61no/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Qingdao Rural Commercial Bank Co., Ltd</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-11-14">907d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-11-14">905d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/qingdao-rural-commercial-bank-co-ltd/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Tianjin University of Commerce</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2027-02-25">279d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2027-02-25">277d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/tianjin-university-of-commerce/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">VIETNAM AIRLINES JSC</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-21">700d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2028-04-21">698d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/vietnam-airlines-jsc/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">VIETNAM JOINT STOCK COMMERCIAL BANK FOR INDUSTRY AND TRADE</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2027-06-05">379d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2027-06-05">377d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/vietnam-joint-stock-commercial-bank-for-industry-and-trade/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Wasu Media & Networking Co., Ltd (com.wasu.demo)</td>
-            <td><span class="expiry-badge expiry-dead" title="Expires 2026-01-12">Expired 130d ago</span></td>
+            <td><span class="expiry-badge expiry-dead" title="Expires 2026-01-12">Expired 132d ago</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/wasu-media-networking-co-ltd-com-wasu-demo/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Wasu Media & Networking Co., Ltd (jicengzhili_create20250114)</td>
-            <td><span class="expiry-badge expiry-dead" title="Expires 2026-01-12">Expired 130d ago</span></td>
+            <td><span class="expiry-badge expiry-dead" title="Expires 2026-01-12">Expired 132d ago</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/wasu-media-networking-co-ltd-jicengzhili-create20250114/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">Wuling Power Corporation</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2027-05-30">373d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2027-05-30">371d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/wuling-power-corporation/manifest.plist">⬇ Install</a></td>
           </tr>
           <tr>
             <td class="cert-name">XL AXIATA, PT TBK</td>
-            <td><span class="expiry-badge expiry-ok" title="Expires 2029-02-17">1003d left</span></td>
+            <td><span class="expiry-badge expiry-ok" title="Expires 2029-02-17">1001d left</span></td>
             <td><a class="install-btn" href="itms-services://?action=download-manifest&url=https://nikos-projects.github.io/ipa-distributor/playbox/xl-axiata-pt-tbk/manifest.plist">⬇ Install</a></td>
           </tr>
           </tbody>
@@ -823,7 +886,7 @@
       </section>
 
   <footer>
-    Auto-deployed from <code>nikos-projects/ipa-distributor</code> · 2026-05-21 15:10 UTC
+    Auto-deployed from <code>nikos-projects/ipa-distributor</code> · 2026-05-23 19:08 UTC
   </footer>
 </body>
 </html>
