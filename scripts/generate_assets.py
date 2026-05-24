@@ -607,8 +607,8 @@ def make_index_html(apps_data, base_url, build_time):
     <a class="donate-btn" href="https://buymeacoffee.com/nyasami" target="_blank" rel="noopener">☕ Donate</a>
   </div>
 
-  <div class="credit-banner" style="margin-top:-.48rem;">
-    <p>UI design originally by <a href="https://github.com/newbbd" target="_blank" rel="noopener">newbbd</a> — check out the <a href="https://newbbd.github.io/ipa-distributor/" target="_blank" rel="noopener">original IPA distributor</a>.</p>
+  <div class="credit-banner" style="margin-top:-.48rem; padding:.5rem 1rem;">
+    <p style="font-size:.73rem; color:#888;">UI forked from <a href="https://github.com/newbbd/ipa-distributor" target="_blank" rel="noopener" style="color:#aaa;">newbbd's IPA distributor</a> — this project is Niko's.</p>
   </div>
 
   <nav>
@@ -628,10 +628,10 @@ def make_index_html(apps_data, base_url, build_time):
   <div class="novadns-banner">
     <div class="novadns-banner-icon">🛡</div>
     <div class="novadns-banner-body">
-      <strong>Block Apple revocation checks before installing</strong>
-      <p>Use the DNS guide to block Apple's cert revocation endpoints — keeps your signed apps working after a cert is flagged.</p>
+      <strong>Install NovaDNS before installing any app</strong>
+      <p>NovaDNS blocks Apple's certificate revocation checks, keeping your signed apps working. Install it first — tap the button now.</p>
     </div>
-    <a class="novadns-btn" href="dns-instructions/">View DNS Guide</a>
+    <a class="novadns-btn" href="https://novadev.vip/resources/dns/novadns.mobileconfig">⬇ Install NovaDNS</a>
   </div>
 
   {app_cards()}
@@ -682,7 +682,7 @@ def make_index_html(apps_data, base_url, build_time):
     Auto-deployed from <code>{GITHUB_REPOSITORY}</code> · {build_time}
     · <a href="dns-instructions/">DNS Guide</a>
     · <a href="https://github.com/{GITHUB_REPOSITORY}" target="_blank" rel="noopener">Source</a>
-    <br /><span style="font-size:.7rem;color:#555;margin-top:.3rem;display:inline-block;">UI design inspired by <a href="https://github.com/newbbd/ipa-distributor" target="_blank" rel="noopener" style="color:#666;">newbbd</a></span>
+    <br /><span style="font-size:.7rem;color:#555;margin-top:.3rem;display:inline-block;">UI by <a href="https://github.com/newbbd/ipa-distributor" target="_blank" rel="noopener" style="color:#666;">newbbd</a></span>
   </footer>
 
   <script>
