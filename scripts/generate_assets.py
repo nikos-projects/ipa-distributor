@@ -464,6 +464,33 @@ def make_index_html(apps_data, base_url, build_time):
     }}
     .row-hidden {{ display:none; }}
 
+    /* ── Tried-cert styles ── */
+    .tried-row td {{ opacity:.45; }}
+    .tried-btn {{
+      background: rgba(30,30,30,.9) !important;
+      color: #666 !important;
+      box-shadow: none !important;
+      border: 1px solid #3a3a3a !important;
+      cursor: default;
+    }}
+    .tried-chip {{ border-color:#444; }}
+    .tried-chip.active {{ border-color:#666; background:rgba(40,40,40,.9); color:#aaa; }}
+    .tried-reset-btn {{
+      display:none;
+      align-items:center;
+      border:1px solid #4a3030;
+      background:rgba(40,14,14,.8);
+      color:#cc8888;
+      border-radius:999px;
+      font-size:.65rem;
+      font-weight:600;
+      padding:.22rem .5rem;
+      cursor:pointer;
+      font-family:inherit;
+      transition:border-color var(--fast),color var(--fast),background var(--fast);
+    }}
+    .tried-reset-btn:hover {{ border-color:#884444; color:#ffaaaa; background:rgba(60,16,16,.9); }}
+
     /* ── STATUS PANEL ── */
     .status-panel {{
       margin-bottom:.9rem; padding:.9rem 1rem;
@@ -580,6 +607,10 @@ def make_index_html(apps_data, base_url, build_time):
     <a class="donate-btn" href="https://buymeacoffee.com/nyasami" target="_blank" rel="noopener">☕ Donate</a>
   </div>
 
+  <div class="credit-banner" style="margin-top:-.48rem;">
+    <p>UI design originally by <a href="https://github.com/newbbd" target="_blank" rel="noopener">newbbd</a> — check out the <a href="https://newbbd.github.io/ipa-distributor/" target="_blank" rel="noopener">original IPA distributor</a>.</p>
+  </div>
+
   <nav>
     {nav_items}
   </nav>
@@ -651,6 +682,7 @@ def make_index_html(apps_data, base_url, build_time):
     Auto-deployed from <code>{GITHUB_REPOSITORY}</code> · {build_time}
     · <a href="dns-instructions/">DNS Guide</a>
     · <a href="https://github.com/{GITHUB_REPOSITORY}" target="_blank" rel="noopener">Source</a>
+    <br /><span style="font-size:.7rem;color:#555;margin-top:.3rem;display:inline-block;">UI design inspired by <a href="https://github.com/newbbd/ipa-distributor" target="_blank" rel="noopener" style="color:#666;">newbbd</a></span>
   </footer>
 
   <script>
@@ -753,10 +785,41 @@ def make_index_html(apps_data, base_url, build_time):
       }}
     }}
 
+    /* ── Tried-cert persistence (localStorage, rebuild-safe) ── */
+    const LS_PREFIX = 'tried:';
+    function triedKey(appId, certName) {{ return LS_PREFIX + appId + ':' + certName; }}
+    function markTried(appId, cn)   {{ try {{ localStorage.setItem(triedKey(appId, cn), '1'); }} catch(_) {{}} }}
+    function unmarkTried(appId, cn) {{ try {{ localStorage.removeItem(triedKey(appId, cn)); }} catch(_) {{}} }}
+    function isTried(appId, cn)     {{ try {{ return localStorage.getItem(triedKey(appId, cn)) === '1'; }} catch(_) {{ return false; }} }}
+    function clearTriedForApp(appId) {{
+      try {{
+        const pre = LS_PREFIX + appId + ':';
+        const gone = [];
+        for (let i = 0; i < localStorage.length; i++) {{
+          const k = localStorage.key(i);
+          if (k && k.startsWith(pre)) gone.push(k);
+        }}
+        gone.forEach(k => localStorage.removeItem(k));
+      }} catch(_) {{}}
+    }}
+    function pruneOrphans(appId, validNames) {{
+      try {{
+        const pre = LS_PREFIX + appId + ':';
+        const gone = [];
+        for (let i = 0; i < localStorage.length; i++) {{
+          const k = localStorage.key(i);
+          if (k && k.startsWith(pre) && !validNames.has(k.slice(pre.length))) gone.push(k);
+        }}
+        gone.forEach(k => localStorage.removeItem(k));
+      }} catch(_) {{}}
+    }}
+
+    /* ── Per-card setup ── */
     /* ── Per-card setup ── */
     function setupCard(card) {{
       const tbody = card.querySelector('tbody');
       if (!tbody) return;
+      const appId = card.id;
       const rows = Array.from(tbody.querySelectorAll('tr'));
       const hasExpiry = rows.some(r => r.querySelector('.expiry-badge'));
 
@@ -764,21 +827,85 @@ def make_index_html(apps_data, base_url, build_time):
         const d = getDaysLeft(r);
         if (isFinite(d)) r.dataset.daysLeft = String(d);
         r.dataset.quality = qualityFromDays(d);
+        const cn = r.querySelector('.cert-name');
+        if (cn) r.dataset.certName = (cn.textContent || '').replace(/\\s+/g, ' ').trim();
       }});
       rows.sort((a, b) => getDaysLeft(b) - getDaysLeft(a) || a.textContent.localeCompare(b.textContent));
       rows.forEach(r => tbody.appendChild(r));
       if (hasExpiry) addBestBadge(rows);
 
-      const controls = card.querySelector('.app-controls');
+      // Prune localStorage keys for certs removed by a rebuild
+      const validNames = new Set(rows.map(r => r.dataset.certName).filter(Boolean));
+      pruneOrphans(appId, validNames);
+
+      const controls   = card.querySelector('.app-controls');
       const filterInput = controls && controls.querySelector('.cert-filter');
       const toggleBtn   = controls && controls.querySelector('.row-toggle');
       const qualBtns    = controls ? Array.from(controls.querySelectorAll('.quality-chip')) : [];
       const emptyEl     = card.querySelector('.filter-empty');
       const rowsLimit   = mobileUI ? MOBILE_INITIAL_ROWS : INITIAL_ROWS;
       let expanded      = !mobileUI;
+      let hideTried     = true;
       const activeQ     = new Set(['healthy', 'expiring']);
 
       if (!filterInput || !toggleBtn) return;
+
+      // Inject "Hide tried" chip + "Reset tried" button into quality filter row
+      const qualFilter = controls.querySelector('.quality-filter');
+
+      const triedChip = document.createElement('button');
+      triedChip.type = 'button';
+      triedChip.className = 'quality-chip tried-chip active';
+      triedChip.setAttribute('aria-pressed', 'true');
+
+      const resetBtn = document.createElement('button');
+      resetBtn.type = 'button';
+      resetBtn.className = 'tried-reset-btn';
+      resetBtn.textContent = 'Reset tried';
+
+      if (qualFilter) {{ qualFilter.appendChild(triedChip); qualFilter.appendChild(resetBtn); }}
+
+      function updateTriedUI() {{
+        const n = rows.filter(r => r.dataset.certName && isTried(appId, r.dataset.certName)).length;
+        triedChip.textContent = n > 0 ? 'Hide tried (' + n + ')' : 'Hide tried';
+        resetBtn.style.display = n > 0 ? 'inline-flex' : 'none';
+        rows.forEach(r => {{
+          const tried = r.dataset.certName ? isTried(appId, r.dataset.certName) : false;
+          r.classList.toggle('tried-row', tried);
+          const btn = r.querySelector('.install-btn');
+          if (btn) {{
+            btn.classList.toggle('tried-btn', tried);
+            btn.textContent = tried ? '\u2713 Tried' : '\u2b07 Install';
+          }}
+        }});
+      }}
+      updateTriedUI();
+
+      // Clicking install marks cert as tried (itms-services link fires normally after)
+      rows.forEach(r => {{
+        const btn = r.querySelector('.install-btn');
+        if (!btn) return;
+        btn.addEventListener('click', () => {{
+          const certName = r.dataset.certName;
+          if (!certName) return;
+          isTried(appId, certName) ? unmarkTried(appId, certName) : markTried(appId, certName);
+          updateTriedUI();
+          refreshRows();
+        }});
+      }});
+
+      triedChip.addEventListener('click', () => {{
+        hideTried = !hideTried;
+        triedChip.classList.toggle('active', hideTried);
+        triedChip.setAttribute('aria-pressed', hideTried ? 'true' : 'false');
+        refreshRows();
+      }});
+
+      resetBtn.addEventListener('click', () => {{
+        clearTriedForApp(appId);
+        updateTriedUI();
+        refreshRows();
+      }});
 
       function refreshQBtns() {{
         qualBtns.forEach(b => {{
@@ -795,7 +922,8 @@ def make_index_html(apps_data, base_url, build_time):
         rows.forEach(r => {{
           const textOk = !q || r.textContent.toLowerCase().includes(q);
           const qualOk = !hasExpiry || (r.dataset.quality === 'unknown') || activeQ.has(r.dataset.quality);
-          const ok = textOk && qualOk;
+          const triedOk = !hideTried || !isTried(appId, r.dataset.certName || '');
+          const ok = textOk && qualOk && triedOk;
           if (ok) matched++;
           r.classList.toggle('row-hidden', !(ok && (expanded || matched <= rowsLimit)));
         }});
