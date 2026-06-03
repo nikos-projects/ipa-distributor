@@ -1,3 +1,2 @@
 nyasami/ksign //the best signer out there - comes pre loaded with a cert
 nikos-projects/playbox //my own app
-opa334/Dopamine //a jailbreak made for devices running iOS 18< (semi-untethered), please manually check compatibility before downloading
