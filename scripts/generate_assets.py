@@ -686,6 +686,7 @@ def make_index_html(apps_data, base_url, build_time):
     Auto-deployed from <code>{GITHUB_REPOSITORY}</code> · {build_time}
     · <a href="https://github.com/{GITHUB_REPOSITORY}" target="_blank" rel="noopener">Source</a>
     <br /><span style="font-size:.7rem;color:#555;margin-top:.3rem;display:inline-block;">UI by <a href="https://github.com/newbbd/ipa-distributor" target="_blank" rel="noopener" style="color:#666;">newbbd</a></span>
+    <br /><span style="font-size:.7rem;color:#555;margin-top:.3rem;display:inline-block;">Special thanks to Carl, Gurt, Moon (name recommendation) and pizzaman for being silly and eating the code</a></span>
   </footer>
 
   <script>
